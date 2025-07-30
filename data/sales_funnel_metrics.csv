@@ -1,0 +1,20 @@
+stage,prospects_entered,conversion_rate_percent,average_time_days,cost_per_stage,drop_off_rate_percent,value_generated,sales_velocity_score,lead_quality_score,engagement_score,follow_up_attempts,channel_source,geographic_region,company_size_segment,industry_vertical,decision_maker_level,budget_qualification,timeline_urgency,competitive_situation,pain_point_severity,solution_fit_score,trust_level_score,objection_frequency
+Awareness,25000,18.5,2,12,81.5,0,8.2,6.5,7.2,1.2,Mixed,Global,Mixed,Technology,Mixed,Unknown,Low,High,Medium,6.8,5.2,0.85
+Interest,4625,28.2,5,28,71.8,0,6.8,7.2,8.1,2.8,Digital,North America,SMB,Technology,Manager,Qualified,Medium,Medium,High,7.5,6.8,1.25
+Consideration,1304,35.8,12,65,64.2,0,5.2,8.1,8.8,4.5,Content,Europe,Mid-Market,Finance,Director,Qualified,Medium,Medium,High,8.2,7.5,1.85
+Intent,467,52.8,18,125,47.2,0,4.1,8.8,9.2,6.2,Direct,North America,Enterprise,Healthcare,VP,Qualified,High,Low,High,8.8,8.2,2.45
+Evaluation,246,68.2,25,180,31.8,0,3.2,9.2,9.5,8.5,Referral,Global,Enterprise,Manufacturing,C-Level,Qualified,High,Low,High,9.2,8.8,3.25
+Purchase,168,85.2,8,220,14.8,2850000,9.5,9.5,9.8,12.2,Direct,North America,Enterprise,Technology,C-Level,Qualified,High,Low,High,9.5,9.2,1.85
+Retention,143,92.5,365,85,7.5,4200000,8.8,9.8,9.5,24.5,Direct,Global,Enterprise,Mixed,C-Level,Qualified,Medium,Low,Medium,9.8,9.5,0.65
+Advocacy,132,15.2,180,45,84.8,850000,6.2,9.5,8.8,8.2,Referral,Global,Enterprise,Mixed,C-Level,Qualified,Low,Low,Low,9.2,9.8,0.25
+Cold Outreach,15000,12.5,3,18,87.5,0,5.8,5.2,6.8,1.8,Direct,Global,Mixed,Mixed,Mixed,Unknown,Low,High,Low,5.8,4.2,1.25
+Warm Leads,8500,25.8,4,22,74.2,0,7.2,7.8,8.2,2.5,Referral,North America,SMB,Technology,Manager,Partial,Medium,Medium,Medium,7.2,6.8,1.05
+Demo Scheduled,892,45.2,8,85,54.8,0,6.8,8.5,8.8,5.2,Mixed,Global,Mid-Market,Mixed,Director,Qualified,High,Medium,High,8.5,7.8,2.15
+Proposal Sent,403,62.8,15,125,37.2,0,5.5,8.8,9.1,7.8,Direct,North America,Enterprise,Finance,VP,Qualified,High,Medium,High,8.8,8.5,2.85
+Negotiation,253,78.5,22,165,21.5,0,4.2,9.1,9.2,9.5,Direct,Global,Enterprise,Mixed,C-Level,Qualified,High,Low,High,9.1,8.8,3.45
+Contract Review,198,88.9,12,95,11.1,0,7.8,9.2,9.5,6.2,Legal,Global,Enterprise,Mixed,Legal,Qualified,High,Low,High,9.5,9.2,1.25
+Onboarding,176,95.5,30,185,4.5,0,6.5,9.5,9.8,15.2,Support,Global,Enterprise,Mixed,Operations,Qualified,Medium,Low,Medium,9.8,9.5,0.85
+Expansion,168,25.8,90,125,74.2,1250000,5.8,9.8,9.2,8.5,Account Management,Global,Enterprise,Mixed,C-Level,Qualified,Medium,Low,Medium,9.2,9.8,1.45
+Renewal,143,89.5,45,65,10.5,3850000,8.2,9.5,9.8,12.5,Account Management,Global,Enterprise,Mixed,Procurement,Qualified,High,Low,Low,9.8,9.5,0.95
+Churn Risk,15,45.2,60,285,54.8,0,3.2,6.8,5.2,18.5,Support,Global,Mixed,Mixed,Operations,Budget Constrained,Low,High,High,5.2,6.8,4.25
+Win-Back,8,22.5,120,485,77.5,185000,2.8,7.2,6.8,25.8,Executive,Global,Enterprise,Mixed,C-Level,Qualified,Low,Medium,Medium,6.8,7.2,3.85

@@ -1,0 +1,16 @@
+product_line,units_sold,revenue,profit_margin_percent,development_cost,marketing_investment,customer_rating,market_demand_score,innovation_index,support_tickets_per_unit,feature_requests,competitive_position,time_to_market_months,r_and_d_investment,user_adoption_rate_percent,churn_rate_percent,upsell_potential_score,cross_sell_opportunities,regulatory_compliance_score,scalability_score,integration_complexity,training_requirements_hours,customer_success_score,market_maturity_stage,pricing_elasticity,seasonal_demand_factor,geographic_performance_variance,channel_effectiveness_score
+Core Platform,2500,4200000,65,1800000,450000,4.6,8.5,7.2,2.8,485,Leader,18,2200000,78.5,12.5,8.8,9.2,9.5,9.1,Medium,80,8.5,Mature,-0.6,1.05,0.15,8.8
+Advanced Analytics,850,2800000,72,1200000,320000,4.8,9.2,8.8,1.8,325,Leader,24,1500000,85.2,8.5,9.5,8.8,8.8,8.8,High,120,9.2,Growth,-0.4,1.25,0.22,9.1
+Mobile Solution,4200,1200000,78,650000,180000,4.2,7.8,6.5,3.2,685,Challenger,12,800000,68.5,22.5,7.2,7.8,8.2,8.5,Low,24,7.8,Mature,-1.2,1.35,0.18,8.2
+Integration Tools,1200,1800000,68,850000,220000,4.4,8.1,7.8,2.5,285,Leader,15,1050000,72.8,15.8,8.5,9.5,9.2,9.8,High,60,8.2,Growth,-0.5,1.12,0.12,8.8
+Security Module,680,2200000,75,950000,280000,4.7,9.5,8.2,1.5,185,Leader,21,1200000,88.5,6.8,9.2,8.2,9.8,8.5,Medium,100,9.5,Growth,-0.3,0.95,0.08,9.2
+API Services,3200,980000,82,420000,125000,4.3,7.2,6.8,4.2,825,Challenger,9,520000,65.2,18.5,7.8,8.8,8.5,9.2,Medium,40,7.5,Mature,-0.8,1.18,0.25,8.5
+Training Platform,950,650000,85,280000,85000,4.5,6.8,5.2,2.2,125,Niche,8,350000,58.5,25.8,6.8,6.2,8.8,7.5,Low,200,8.8,Mature,-0.9,1.45,0.35,7.2
+Workflow Automation,1850,3200000,69,1450000,385000,4.5,8.8,8.5,2.1,385,Challenger,20,1800000,75.8,14.2,8.8,9.1,9.1,9.5,High,90,8.8,Growth,-0.5,1.08,0.18,8.8
+Data Visualization,1280,1850000,73,850000,225000,4.6,8.2,7.8,1.9,285,Leader,16,1050000,82.5,11.5,8.5,8.8,8.2,8.8,Medium,70,8.8,Growth,-0.4,1.22,0.15,8.5
+Collaboration Suite,2850,2450000,71,1250000,350000,4.4,8.5,7.5,2.8,485,Challenger,14,1550000,72.5,16.8,8.2,8.5,8.8,8.8,Medium,50,8.2,Mature,-0.7,1.15,0.20,8.2
+Reporting Engine,1650,1450000,76,680000,185000,4.3,7.8,7.2,2.5,325,Leader,12,850000,68.5,18.5,7.8,8.2,9.2,8.5,Medium,60,8.1,Mature,-0.6,1.05,0.12,8.5
+Customer Portal,3850,1850000,79,580000,165000,4.2,7.5,6.8,3.5,685,Challenger,10,720000,62.8,22.8,7.5,7.8,8.5,8.2,Low,30,7.8,Mature,-0.8,1.12,0.28,7.8
+Backup Solutions,950,1250000,68,485000,125000,4.1,7.2,6.5,2.8,185,Follower,15,600000,65.8,19.5,7.2,6.8,9.5,8.8,Medium,45,7.5,Mature,-0.5,0.88,0.15,7.5
+Performance Monitor,1450,1650000,74,750000,195000,4.4,8.1,7.8,2.2,285,Leader,18,950000,78.2,13.5,8.2,8.5,8.8,9.1,Medium,55,8.5,Growth,-0.4,1.08,0.18,8.2
+Compliance Suite,580,2850000,66,1850000,485000,4.7,9.1,8.8,1.2,125,Leader,30,2200000,92.5,5.8,9.5,8.8,9.8,8.2,High,150,9.2,Growth,-0.2,0.92,0.08,9.1
