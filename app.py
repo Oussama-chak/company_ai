@@ -2,85 +2,60 @@
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-import os
-import sys
-from datetime import datetime
-from recommendation_agent import RecommendationAgent
-from sql_agent import SQLAgent
 
-class EnhancedBusinessAnalyzer:
-    """Main application for enhanced business analysis with PDF generation."""
+import uuid
+from graph import app
+from data_ingestion.loader_main import ingest_all_csvs
+
+def run_workflow():
+    """Main workflow execution"""
     
-    def __init__(self):
-        self.recommendation_agent = RecommendationAgent()
-        self.sql_agent = SQLAgent()
-        
-    def run_analysis(self, user_query: str = "Generate comprehensive strategic business analysis"):
-        """Run the complete business analysis workflow."""
-        print("🚀 Starting Enhanced Business Analysis")
-        print("=" * 60)
-        print(f"Query: {user_query}")
-        print(f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        print("=" * 60)
-        
-        # Initialize state
-        state = {
-            "messages": [{"role": "user", "content": user_query}],
-            "next": "recommendation_agent",
-            "report_path": None
-        }
-        
-        try:
-            # Step 1: Recommendation agent requests data
-            print("\n📊 Step 1: Analyzing requirements and requesting data...")
-            state = self.recommendation_agent.process_request(state)
-            
-            if state.get("next") == "sql_agent":
-                # Step 2: SQL agent processes data requests
-                print("\n🔍 Step 2: Extracting data from database...")
-                state = self.sql_agent.process_request(state)
-                
-                # Step 3: Generate final report
-                print("\n📝 Step 3: Generating strategic analysis report...")
-                state = self.recommendation_agent.process_request(state)
-            
-            # Results
-            print("\n" + "=" * 60)
-            print("✅ ANALYSIS COMPLETE")
-            print("=" * 60)
-            
-            if state.get("report_path"):
-                report_path = os.path.abspath(state["report_path"])
-                print(f"📄 Report Generated: {report_path}")
-                print(f"📁 File Size: {os.path.getsize(report_path) / 1024:.1f} KB")
-                return report_path
-            else:
-                print("❌ Report generation failed")
-                return None
-                
-        except Exception as e:
-            print(f"\n❌ Analysis failed: {e}")
-            return None
-
-def main():
-    """Main entry point."""
-    # Check environment
-    if not os.getenv("GEMINI_API_KEY"):
-        print("❌ GEMINI_API_KEY environment variable required!")
-        print("Set it with: export GEMINI_API_KEY='your_api_key'")
+    # Step 1: Data ingestion
+    print("--- 1. Starting Data Ingestion ---")
+    try:
+        ingest_all_csvs(folder_path="data")
+        print("✅ Data ingestion complete\n")
+    except Exception as e:
+        print(f"❌ Data ingestion failed: {e}\n")
         return
-    
-    # Run analysis
-    analyzer = EnhancedBusinessAnalyzer()
-    report_path = analyzer.run_analysis(
-        "Generate an expert-level strategic business analysis with actionable recommendations"
-    )
-    
-    if report_path:
-        print(f"\n🎯 Success! Your strategic analysis report is ready:")
-        print(f"📍 {report_path}")
-    else:
-        print("\n💥 Analysis failed. Check the logs above.")
+
+    # Step 2: Run agent workflow
+    print("--- 2. Starting Agent Workflow ---")
+    session_id = str(uuid.uuid4())
+    print(f"🚀 Session ID: {session_id}")
+
+    initial_state = {
+        "messages": [{"role": "user", "content": "Generate a strategic business report."}],
+        "report_path": None
+    }
+
+    try:
+        # Execute workflow
+        final_state = None
+        for state in app.stream(initial_state, stream_mode="values"):
+            final_state = state
+            
+            if state.get("messages"):
+                last_message = state["messages"][-1]
+                print(f"📝 {last_message['role']}: {last_message['content'][:100]}...")
+        
+        # Check final result
+        if final_state and final_state.get("report_path"):
+            print(f"\n✅ SUCCESS: Report saved at {final_state['report_path']}")
+            
+            # Verify file exists
+            if os.path.exists(final_state['report_path']):
+                file_size = os.path.getsize(final_state['report_path'])
+                print(f"📄 File size: {file_size} bytes")
+            else:
+                print("❌ WARNING: Report file not found on disk")
+        else:
+            print("\n❌ FAILED: No report path returned")
+            
+    except Exception as e:
+        print(f"\n❌ Workflow failed: {e}")
+
+    print("\n--- Workflow Finished ---")
 
 if __name__ == "__main__":
-    main()
+    run_workflow()
