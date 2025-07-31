@@ -6,8 +6,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
+from reportlab.lib.enums import TA_LEFT
 import os
 import re
 
@@ -255,34 +256,50 @@ class RecommendationAgent:
         
         DELIVERABLES REQUIS :
         
-        1. 3 FORCES CLÉS
+        1. 🔥 3 FORCES CLÉS
         • Chiffres exacts à l'appui
         • Tendances quantifiées sur 3-6 mois
         • Impact métier précis
         
-        2. 3 FAIBLESSES CRITIQUES
+        2. ⚠️ 3 FAIBLESSES CRITIQUES
         • Écarts vs benchmarks sectoriels
         • Pertes de revenus chiffrées
         • Causes racines identifiées
         
-        3. 5 ACTIONS PRIORITAIRES
+        3. 🎯 5 ACTIONS PRIORITAIRES
         Chaque action DOIT inclure :
         • Objectif : métrique précise + deadline
         • Méthode : étapes concrètes (2-3 max)
         • ROI estimé : gain financier attendu
         
-        4. FORECAST 6 MOIS
+        4. 📈 FORECAST 6 MOIS
         • 3 scénarios chiffrés (pessimiste/réaliste/optimiste)
         • Risques quantifiés + probabilités
         
-        CONSIGNES :
-        • Citez les chiffres exactes des données
-        • Zéro généralité, 100% spécifique aux données fournies
-        • Recommandations immédiatement actionnables
-        • Format : bullet points courts et percutants
-        generer les insights pas en paragraphes mais en parties separeer pour la lisibilité du rapports.Separer chaque sous titre des paragraphes with bullet points avec retour a la lignes pour organiser le paragraphe 
-        add in the final part a brief overview in a fifth element big title  has where we at what we need and what to improve in max 4 lines no long text 
-    
+        5. ⚡ VUE D'ENSEMBLE RAPIDE (MAX 4 LIGNES)
+        • Où en sommes-nous ?
+        • Ce dont nous avons besoin
+        • Ce qu'il faut améliorer
+
+        CONSIGNES STRICTES :
+        • Citez les chiffres exacts des données.
+        • Zéro généralité, 100% spécifique aux données fournies.
+        • Recommandations immédiatement actionnables.
+        • Format : bullet points courts et percutants avec émojis.
+        • Chaque section doit commencer par son émoji et titre.
+        • Utilisez EXACTEMENT ce format :
+          
+          🔥 3 FORCES CLÉS
+          • Point 1
+          • Point 2
+          • Point 3
+          
+          ⚠️ 3 FAIBLESSES CRITIQUES
+          • Point 1
+          • Point 2
+          • Point 3
+          
+          etc...
         """
         
         try:
@@ -307,82 +324,79 @@ class RecommendationAgent:
         leads = analysis.get("total_leads", 0)
         conversion = analysis.get("conversion_rate", 0)
         
-        report = f"""
-        📊 ANALYSE CHIRURGICALE DES PERFORMANCES
-        
-        🔥 3 FORCES CLÉS
-        
-        • PERFORMANCE COMMERCIALE: {sales:,.0f}€ de CA {"avec croissance de +"+str(growth)+"%" if growth > 0 else ""}
-          Impact: Génère {sales/12:,.0f}€/mois de revenus récurrents
-          Tendance 6M: {"Accélération attendue" if growth > 10 else "Croissance modérée" if growth > 0 else "Stabilisation requise"}
-        
-        • EFFICACITÉ MARKETING: ROI de {roi:.1f}x {"(Performance excellente)" if roi > 4 else "(Performance correcte)" if roi > 2 else "(Optimisation requise)"}
-          Impact: Chaque 1€ investi génère {roi:.1f}€ de retour
-          Tendance 6M: {"Maintien performance" if roi > 3 else "Amélioration nécessaire"}
-        
-        • SATISFACTION CLIENT: {satisfaction:.1f}/5 {"(Excellent)" if satisfaction > 4.5 else "(Bon)" if satisfaction > 4 else "(À améliorer)"}
-          Impact: Taux de rétention estimé à {100-churn:.0f}%
-          Tendance 6M: {"Fidélisation renforcée" if satisfaction > 4 else "Actions correctives requises"}
-        
-        ⚠️ 3 FAIBLESSES CRITIQUES
-        
-        • TAUX ATTRITION: {churn:.1f}% vs benchmark 12-15%
-          Perte: {(sales * churn/100):,.0f}€ de CA annuel perdu
-          Cause: {"Score satisfaction insuffisant" if satisfaction < 4 else "Optimisation parcours client"}
-        
-        • CONVERSION: {conversion:.1f}% {"vs benchmark 3-5%" if conversion > 0 else "Non mesurée"}
-          Perte: {(leads * (5-conversion)/100 * 1000):,.0f}€ potentiel non capté {"si benchmark atteint" if conversion > 0 else ""}
-          Cause: {"Parcours d'achat non optimisé" if conversion < 3 else "Ciblage à affiner"}
-        
-        • CROISSANCE: {growth:.1f}% {"vs objectif 15-20%" if growth < 15 else "Rythme insuffisant"}
-          Perte: {sales * (15-growth)/100:,.0f}€ d'écart vs potentiel
-          Cause: {"Acquisition client limitée" if leads < 1000 else "Optimisation tarifaire"}
-        
-        🎯 5 ACTIONS PRIORITAIRES
-        
-        1. OPTIMISATION CONVERSION
-           • Objectif: +2% taux conversion d'ici 60 jours
-           • Méthode: A/B test pages de vente + simplification checkout
-           • ROI: +{(leads * 2/100 * 1000):,.0f}€/mois
-        
-        2. RÉDUCTION ATTRITION
-           • Objectif: Churn <15% d'ici 90 jours
-           • Méthode: Programme rétention + enquêtes satisfaction
-           • ROI: +{(sales * min(churn-15, 0)/100):,.0f}€ préservés/an
-        
-        3. AMPLIFICATION LEADS
-           • Objectif: +30% leads générés d'ici 45 jours
-           • Méthode: Budget +20% sur canaux ROI>3x + contenu viral
-           • ROI: +{(leads * 0.3 * conversion/100 * 1000):,.0f}€/mois
-        
-        4. OPTIMISATION PRIX
-           • Objectif: +5% marge d'ici 30 jours
-           • Méthode: Test prix segments haute valeur + bundling
-           • ROI: +{(sales * 0.05):,.0f}€/an
-        
-        5. AUTOMATISATION SUPPORT
-           • Objectif: -25% tickets support d'ici 60 jours
-           • Méthode: Chatbot FAQ + self-service client
-           • ROI: -50k€ coûts opérationnels/an
-        
-        📈 FORECAST 6 MOIS
-        
-        🔴 PESSIMISTE (-10%): {sales * 0.9:,.0f}€
-        • Probabilité: 20%
-        • Risques: Concurrence aggressive, baisse conversion
-        
-        🟡 RÉALISTE (+8%): {sales * 1.08:,.0f}€
-        • Probabilité: 60%
-        • Hypothèse: Actions 1-3 mises en œuvre
-        
-        🟢 OPTIMISTE (+25%): {sales * 1.25:,.0f}€
-        • Probabilité: 20%
-        • Catalyseurs: Toutes actions + expansion marché
-        
-        ⚡ RISQUES QUANTIFIÉS
-        • Perte concurrent majeur: -15% CA (prob: 30%)
-        • Réduction budget marketing: -10% leads (prob: 25%)
-        • Problème tech majeur: -5% satisfaction (prob: 15%)
+        report = f"""🔥 3 FORCES CLÉS
+
+• PERFORMANCE COMMERCIALE: {sales:,.0f}€ de CA {"avec croissance de +"+str(growth)+"%" if growth > 0 else ""}
+  Impact: Génère {sales/12:,.0f}€/mois de revenus récurrents
+  Tendance 6M: {"Accélération attendue" if growth > 10 else "Croissance modérée" if growth > 0 else "Stabilisation requise"}
+
+• EFFICACITÉ MARKETING: ROI de {roi:.1f}x {"(Performance excellente)" if roi > 4 else "(Performance correcte)" if roi > 2 else "(Optimisation requise)"}
+  Impact: Chaque 1€ investi génère {roi:.1f}€ de retour
+  Tendance 6M: {"Maintien performance" if roi > 3 else "Amélioration nécessaire"}
+
+• SATISFACTION CLIENT: {satisfaction:.1f}/5 {"(Excellent)" if satisfaction > 4.5 else "(Bon)" if satisfaction > 4 else "(À améliorer)"}
+  Impact: Taux de rétention estimé à {100-churn:.0f}%
+  Tendance 6M: {"Fidélisation renforcée" if satisfaction > 4 else "Actions correctives requises"}
+
+⚠️ 3 FAIBLESSES CRITIQUES
+
+• TAUX ATTRITION: {churn:.1f}% vs benchmark 12-15%
+  Perte: {(sales * churn/100):,.0f}€ de CA annuel perdu
+  Cause: {"Score satisfaction insuffisant" if satisfaction < 4 else "Optimisation parcours client"}
+
+• CONVERSION: {conversion:.1f}% {"vs benchmark 3-5%" if conversion > 0 else "Non mesurée"}
+  Perte: {(leads * (5-conversion)/100 * 1000):,.0f}€ potentiel non capté {"si benchmark atteint" if conversion > 0 else ""}
+  Cause: {"Parcours d'achat non optimisé" if conversion < 3 else "Ciblage à affiner"}
+
+• CROISSANCE: {growth:.1f}% {"vs objectif 15-20%" if growth < 15 else "Rythme insuffisant"}
+  Perte: {sales * (15-growth)/100:,.0f}€ d'écart vs potentiel
+  Cause: {"Acquisition client limitée" if leads < 1000 else "Optimisation tarifaire"}
+
+🎯 5 ACTIONS PRIORITAIRES
+
+1. OPTIMISATION CONVERSION
+   • Objectif: +2% taux conversion d'ici 60 jours
+   • Méthode: A/B test pages de vente + simplification checkout
+   • ROI: +{(leads * 2/100 * 1000):,.0f}€/mois
+
+2. RÉDUCTION ATTRITION
+   • Objectif: Churn <15% d'ici 90 jours
+   • Méthode: Programme rétention + enquêtes satisfaction
+   • ROI: +{(sales * min(churn-15, 0)/100):,.0f}€ préservés/an
+
+3. AMPLIFICATION LEADS
+   • Objectif: +30% leads générés d'ici 45 jours
+   • Méthode: Budget +20% sur canaux ROI>3x + contenu viral
+   • ROI: +{(leads * 0.3 * conversion/100 * 1000):,.0f}€/mois
+
+4. OPTIMISATION PRIX
+   • Objectif: +5% marge d'ici 30 jours
+   • Méthode: Test prix segments haute valeur + bundling
+   • ROI: +{(sales * 0.05):,.0f}€/an
+
+5. AUTOMATISATION SUPPORT
+   • Objectif: -25% tickets support d'ici 60 jours
+   • Méthode: Chatbot FAQ + self-service client
+   • ROI: -50k€ coûts opérationnels/an
+
+📈 FORECAST 6 MOIS
+
+🔴 PESSIMISTE (-10%): {sales * 0.9:,.0f}€
+• Probabilité: 20%
+• Risques: Concurrence aggressive, baisse conversion
+
+🟡 RÉALISTE (+8%): {sales * 1.08:,.0f}€
+• Probabilité: 60%
+• Hypothèse: Actions 1-3 mises en œuvre
+
+🟢 OPTIMISTE (+25%): {sales * 1.25:,.0f}€
+• Probabilité: 20%
+• Catalyseurs: Toutes actions + expansion marché
+
+⚡ RISQUES QUANTIFIÉS
+• Perte concurrent majeur: -15% CA (prob: 30%)
+• Réduction budget marketing: -10% leads (prob: 25%)
+• Problème tech majeur: -5% satisfaction (prob: 15%)
         """
         
         return report
@@ -446,24 +460,131 @@ class RecommendationAgent:
             print(f"  - Chart creation failed: {e}")
             return None
 
+    def _create_custom_styles(self):
+        """Create custom paragraph styles for better formatting"""
+        styles = getSampleStyleSheet()
+        
+        # Custom style for bullet points
+        styles.add(ParagraphStyle(
+            name='BulletPoint',
+            parent=styles['Normal'],
+            leftIndent=20,
+            bulletIndent=10,
+            spaceAfter=6,
+            fontSize=10,
+            leading=14
+        ))
+        
+        # Custom style for section headers
+        styles.add(ParagraphStyle(
+            name='SectionHeader',
+            parent=styles['Heading2'],
+            fontSize=14,
+            textColor=colors.darkblue,
+            spaceAfter=12,
+            spaceBefore=20,
+            fontName='Helvetica-Bold'
+        ))
+        
+        # Custom style for subsection headers
+        styles.add(ParagraphStyle(
+            name='SubSectionHeader',
+            parent=styles['Normal'],
+            fontSize=12,
+            textColor=colors.darkred,
+            spaceAfter=8,
+            spaceBefore=12,
+            fontName='Helvetica-Bold'
+        ))
+        
+        return styles
+
+    def _parse_gemini_output_to_pdf_elements(self, insights: str, styles):
+        """Parse Gemini output and convert to PDF elements preserving exact formatting"""
+        elements = []
+        lines = insights.split('\n')
+        
+        current_section = None
+        
+        for line in lines:
+            line = line.strip()
+            
+            if not line:  # Empty line
+                elements.append(Spacer(1, 6))
+                continue
+            
+            # Check if it's a main section header (with emoji)
+            if any(emoji in line for emoji in ['🔥', '⚠️', '🎯', '📈', '⚡']):
+                if 'FORCES CLÉS' in line:
+                    elements.append(Paragraph(line, styles['SectionHeader']))
+                    current_section = 'forces'
+                elif 'FAIBLESSES CRITIQUES' in line:
+                    elements.append(Paragraph(line, styles['SectionHeader']))
+                    current_section = 'faiblesses'
+                elif 'ACTIONS PRIORITAIRES' in line:
+                    elements.append(Paragraph(line, styles['SectionHeader']))
+                    current_section = 'actions'
+                elif 'FORECAST' in line or 'PRÉVISIONS' in line:
+                    elements.append(Paragraph(line, styles['SectionHeader']))
+                    current_section = 'forecast'
+                elif 'RISQUES' in line or 'VUE D\'ENSEMBLE' in line:
+                    elements.append(Paragraph(line, styles['SectionHeader']))
+                    current_section = 'overview'
+                else:
+                    elements.append(Paragraph(line, styles['SectionHeader']))
+                    current_section = 'other'
+                continue
+            
+            # Check if it's a bullet point
+            if line.startswith('•'):
+                # Clean the bullet point and format it properly
+                bullet_text = line[1:].strip()  # Remove the bullet
+                elements.append(Paragraph(f"• {bullet_text}", styles['BulletPoint']))
+                continue
+            
+            # Check if it's a numbered action
+            if re.match(r'^\d+\.', line):
+                elements.append(Paragraph(line, styles['SubSectionHeader']))
+                continue
+            
+            # Check if it's a sub-bullet or indented content
+            if line.startswith('  ') and ('•' in line or ':' in line):
+                # This is indented content, format as smaller bullet
+                clean_line = line.strip()
+                if clean_line.startswith('•'):
+                    clean_line = clean_line[1:].strip()
+                elements.append(Paragraph(f"    ◦ {clean_line}", styles['Normal']))
+                continue
+            
+            # Check for scenario lines (🔴, 🟡, 🟢)
+            if any(emoji in line for emoji in ['🔴', '🟡', '🟢']):
+                elements.append(Paragraph(line, styles['SubSectionHeader']))
+                continue
+            
+            # Default: treat as normal paragraph
+            if line:
+                elements.append(Paragraph(line, styles['Normal']))
+        
+        return elements
+
     def _generate_pdf_report(self, analysis: Dict[str, Any], insights: str, chart_path: str) -> str:
-        """Generate surgical precision PDF report"""
+        """Generate surgical precision PDF report with exact Gemini formatting"""
         filename = f"reports/analyse_strategique_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
         
         try:
-            doc = SimpleDocTemplate(filename, pagesize=letter)
-            styles = getSampleStyleSheet()
+            doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=40, bottomMargin=40)
+            styles = self._create_custom_styles()
             story = []
 
-            # Title
+            # Title Section
             story.append(Paragraph("📊 ANALYSE STRATÉGIQUE COMMERCIALE", styles['Title']))
-            story.append(Paragraph(f"Rapport de Précision Chirurgicale", styles['Heading2']))
+            story.append(Paragraph("Rapport de Précision Chirurgicale", styles['Heading2']))
             story.append(Spacer(1, 10))
             story.append(Paragraph(f"Généré le {datetime.now().strftime('%d/%m/%Y à %H:%M')}", styles['Normal']))
             story.append(Spacer(1, 30))
 
             # Executive Dashboard
-            story.append(Paragraph("🎯 DASHBOARD EXÉCUTIF", styles['Heading1']))
+            story.append(Paragraph("🎯 DASHBOARD EXÉCUTIF", styles['SectionHeader']))
             
             # Key metrics with precise calculations
             dashboard_metrics = []
@@ -492,50 +613,52 @@ class RecommendationAgent:
                 if sales > 0:
                     dashboard_metrics.append(f"💸 Perte Attrition: {sales * churn/100:,.0f}€/an")
 
-            dashboard_text = "<br/>".join([f"• {metric}" for metric in dashboard_metrics])
-            story.append(Paragraph(dashboard_text, styles['Normal']))
+            # Add dashboard metrics as bullet points
+            for metric in dashboard_metrics:
+                story.append(Paragraph(f"• {metric}", styles['BulletPoint']))
             story.append(Spacer(1, 20))
 
             # Chart
             if chart_path and os.path.exists(chart_path):
-                story.append(Paragraph("📊 VUE D'ENSEMBLE PERFORMANCE", styles['Heading1']))
+                story.append(Paragraph("📊 VUE D'ENSEMBLE PERFORMANCE", styles['SectionHeader']))
                 story.append(Image(chart_path, width=500, height=300))
                 story.append(Spacer(1, 20))
 
-            # AI Analysis - formatted for PDF
-            story.append(Paragraph("🤖 ANALYSE STRATÉGIQUE IA", styles['Heading1']))
+            # AI Analysis - Use the new parsing method
+            story.append(Paragraph("🤖 ANALYSE STRATÉGIQUE IA", styles['SectionHeader']))
             
-            # Clean and format the insights
-            formatted_insights = self._format_surgical_insights_for_pdf(insights)
-            story.append(Paragraph(formatted_insights, styles['Normal']))
+            # Parse Gemini output and add elements preserving exact formatting
+            gemini_elements = self._parse_gemini_output_to_pdf_elements(insights, styles)
+            story.extend(gemini_elements)
             story.append(Spacer(1, 20))
 
             # Precision calculations
-            story.append(Paragraph("🔢 CALCULS DE PRÉCISION", styles['Heading1']))
+            story.append(Paragraph("🔢 CALCULS DE PRÉCISION", styles['SectionHeader']))
             precision_calcs = []
             
             if analysis.get("total_sales", 0) > 0 and analysis.get("growth_rate", 0) != 0:
                 sales = analysis["total_sales"]
                 growth = analysis["growth_rate"]
-                precision_calcs.append(f"• Projection 6M (croissance actuelle): {sales * (1 + growth/100)**0.5:,.0f}€")
-                precision_calcs.append(f"• Potentiel si croissance +5%: {sales * (1 + (growth+5)/100)**0.5:,.0f}€")
-                precision_calcs.append(f"• Écart de performance: {sales * 5/100:,.0f}€")
+                precision_calcs.append(f"Projection 6M (croissance actuelle): {sales * (1 + growth/100)**0.5:,.0f}€")
+                precision_calcs.append(f"Potentiel si croissance +5%: {sales * (1 + (growth+5)/100)**0.5:,.0f}€")
+                precision_calcs.append(f"Écart de performance: {sales * 5/100:,.0f}€")
             
             if analysis.get("marketing_roi", 0) > 0 and analysis.get("total_leads", 0) > 0:
                 roi = analysis["marketing_roi"]
                 leads = analysis["total_leads"]
-                precision_calcs.append(f"• Optimisation ROI +1x = +{leads * 1000:,.0f}€ CA potentiel")
+                precision_calcs.append(f"Optimisation ROI +1x = +{leads * 1000:,.0f}€ CA potentiel")
                 
             if analysis.get("churn_rate", 0) > 0 and analysis.get("total_sales", 0) > 0:
                 churn = analysis["churn_rate"]
                 sales = analysis["total_sales"]
                 target_churn = 12  # Industry benchmark
-                precision_calcs.append(f"• Réduction churn à {target_churn}% = +{sales * (churn-target_churn)/100:,.0f}€ préservés")
+                precision_calcs.append(f"Réduction churn à {target_churn}% = +{sales * (churn-target_churn)/100:,.0f}€ préservés")
 
             if precision_calcs:
-                precision_text = "<br/>".join(precision_calcs)
-                story.append(Paragraph(precision_text, styles['Normal']))
+                for calc in precision_calcs:
+                    story.append(Paragraph(f"• {calc}", styles['BulletPoint']))
 
+            # Build the PDF
             doc.build(story)
             print(f"  - ✅ Rapport stratégique sauvegardé: {filename}")
             return filename
@@ -559,59 +682,6 @@ class RecommendationAgent:
             return fallback_path
 
     def _format_surgical_insights_for_pdf(self, insights: str) -> str:
-        """Format surgical insights for PDF with proper structure"""
-        try:
-            # Clean up the insights and make them PDF-friendly
-            formatted = insights.replace("📊", "").replace("🔥", "").replace("⚠️", "").replace("🎯", "").replace("📈", "")
-            
-            # Split into sections
-            sections = formatted.split("FORCES CLÉS")
-            if len(sections) > 1:
-                forces_section = sections[1].split("FAIBLESSES CRITIQUES")[0]
-                formatted_result = "<b>🔥 FORCES CLÉS:</b><br/>" + forces_section.replace("•", "• ").strip()
-                
-                if "FAIBLESSES CRITIQUES" in formatted:
-                    faiblesses_section = formatted.split("FAIBLESSES CRITIQUES")[1].split("ACTIONS PRIORITAIRES")[0]
-                    formatted_result += "<br/><br/><b>⚠️ FAIBLESSES CRITIQUES:</b><br/>" + faiblesses_section.replace("•", "• ").strip()
-                
-                if "ACTIONS PRIORITAIRES" in formatted:
-                    actions_section = formatted.split("ACTIONS PRIORITAIRES")[1].split("FORECAST")[0]
-                    formatted_result += "<br/><br/><b>🎯 ACTIONS PRIORITAIRES:</b><br/>" + actions_section.replace("•", "• ").strip()
-                
-                if "FORECAST" in formatted:
-                    forecast_section = formatted.split("FORECAST")[1].strip()
-                    formatted_result += "<br/><br/><b>📈 PRÉVISIONS 6 MOIS:</b><br/>" + forecast_section.replace("•", "• ").strip()
-                
-                return formatted_result
-            
-            return formatted.replace("•", "• ")
-            
-        except Exception as e:
-            print(f"  - Warning: Insight formatting failed: {e}")
-            return insights.replace("•", "• ")
-
-    def _format_insights_for_pdf(self, insights: str) -> str:
-        """Format insights text for better PDF presentation"""
-        try:
-            # Split insights and recommendations
-            parts = insights.split("RECOMMENDATIONS:")
-            insights_part = parts[0].replace("INSIGHTS:", "").strip()
-            recommendations_part = parts[1].strip() if len(parts) > 1 else ""
-            
-            formatted = "<b>Key Insights:</b><br/>"
-            # Format insights with bullets
-            insights_items = re.findall(r'\d+\.([^0-9]+?)(?=\d+\.|$)', insights_part)
-            for item in insights_items:
-                formatted += f"• {item.strip()}<br/>"
-            
-            formatted += "<br/><b>Strategic Recommendations:</b><br/>"
-            # Format recommendations with bullets
-            rec_items = re.findall(r'\d+\.([^0-9]+?)(?=\d+\.|$)', recommendations_part)
-            for item in rec_items:
-                formatted += f"• {item.strip()}<br/>"
-            
-            return formatted
-            
-        except Exception as e:
-            print(f"  - Warning: Insight formatting failed: {e}")
-            return insights.replace("INSIGHTS:", "<b>Insights:</b>").replace("RECOMMENDATIONS:", "<br/><br/><b>Recommendations:</b>")
+        """DEPRECATED - This method is no longer needed with the new parsing approach"""
+        # This method is kept for backward compatibility but is not used
+        return insights
