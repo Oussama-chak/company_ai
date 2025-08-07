@@ -4,6 +4,8 @@ from langgraph.graph import StateGraph, END
 from recommendation_agent.recommendation_agent import RecommendationAgent
 from sql_agent.agent import SQLAgent
 
+import reportlab
+
 # Define the state for our graph
 class AgentState(TypedDict):
     messages: List[dict]
@@ -70,5 +72,5 @@ workflow.add_edge("sql_agent", "report_generator")
 workflow.add_edge("report_generator", END)
 
 # Compile the graph
-app = workflow.compile()
+app1 = workflow.compile()
 print("✅ Simplified LangGraph workflow compiled successfully.")

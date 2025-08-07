@@ -1,7 +1,7 @@
 # recommendation_graph.py
 from langgraph.graph import StateGraph, END
 from typing import Dict, Any
-from recommendation_agent
+from recommendation_agent import RecommendationAgent
 
 class RecommendationGraph:
     def __init__(self):

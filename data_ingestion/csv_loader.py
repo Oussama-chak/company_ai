@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 from sqlalchemy import inspect
-from db_connector import get_engine
+from .db_connector import get_engine
 
 def load_csv_to_sql(csv_path: str, table_name: str):
     if not os.path.exists(csv_path):
