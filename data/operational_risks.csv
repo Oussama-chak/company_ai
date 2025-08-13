@@ -1,0 +1,11 @@
+risk_category,risk_description,probability_percent,impact_severity,current_mitigation,mitigation_cost_annual,last_occurrence_months_ago,financial_impact_estimate,department_responsible,monitoring_frequency
+Technology,Server downtime affecting customer access,15,High,Backup servers and monitoring,25000,3,150000,IT,Daily
+Market,Major competitor launching similar product,35,High,Product differentiation strategy,80000,12,300000,Product,Monthly
+Financial,Key customer non-payment or bankruptcy,8,Medium,Credit checks and diversification,15000,18,75000,Finance,Quarterly
+Operational,Key employee departure in critical role,25,Medium,Documentation and cross-training,20000,6,100000,HR,Monthly
+Regulatory,Changes in data privacy regulations,40,Medium,Legal compliance monitoring,35000,24,120000,Legal,Quarterly
+Supply Chain,Critical vendor service interruption,12,High,Multiple vendor relationships,30000,9,200000,Operations,Monthly
+Security,Data breach or cyber attack,18,High,Security systems and training,45000,0,500000,IT,Weekly
+Market,Economic downturn reducing customer spending,30,High,Diversified customer base,10000,36,250000,Sales,Monthly
+Product,Quality issues affecting customer satisfaction,10,Medium,Quality assurance processes,40000,8,80000,Product,Weekly
+Competitive,Price war initiated by competitors,22,Medium,Value proposition strengthening,25000,15,180000,Marketing,Monthly

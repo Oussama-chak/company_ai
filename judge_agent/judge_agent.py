@@ -221,6 +221,81 @@ class LLMJudge:
         
         return forces_analysis
     
+    def _clean_json_response(self, response_text: str) -> str:
+        """Clean response text to extract valid JSON"""
+        # Remove markdown code blocks
+        response_text = response_text.replace("```json", "").replace("```", "")
+        
+        # Find JSON object boundaries
+        start_idx = response_text.find("{")
+        if start_idx == -1:
+            return response_text
+        
+        # Find the matching closing brace
+        brace_count = 0
+        end_idx = -1
+        
+        for i, char in enumerate(response_text[start_idx:], start_idx):
+            if char == "{":
+                brace_count += 1
+            elif char == "}":
+                brace_count -= 1
+                if brace_count == 0:
+                    end_idx = i + 1
+                    break
+        
+        if end_idx != -1:
+            return response_text[start_idx:end_idx]
+        
+        return response_text
+    
+    def _validate_and_fix_json(self, json_str: str) -> dict:
+        """Validate JSON and fix common issues"""
+        try:
+            return json.loads(json_str)
+        except json.JSONDecodeError as e:
+            # Try to fix common JSON issues
+            fixed_json = json_str
+            
+            # Fix unterminated strings by finding the last complete field
+            if "Unterminated string" in str(e):
+                # Find the last complete field before the error
+                lines = fixed_json.split('\n')
+                valid_lines = []
+                
+                for line in lines:
+                    if line.strip().endswith(',') or line.strip().endswith('{') or line.strip().endswith('['):
+                        valid_lines.append(line)
+                    elif line.strip().endswith('"') and ':' in line:
+                        valid_lines.append(line)
+                    else:
+                        break
+                
+                # Reconstruct JSON with proper closing
+                if valid_lines:
+                    fixed_json = '\n'.join(valid_lines)
+                    if not fixed_json.strip().endswith('}'):
+                        fixed_json += '\n}'
+            
+            try:
+                return json.loads(fixed_json)
+            except:
+                # Return default structure if all else fails
+                return {
+                    "quality_score": 0.5,
+                    "authenticity_score": 0.5,
+                    "data_integration_score": 0.5,
+                    "improvement_suggestions": ["JSON parsing failed - please review response format"],
+                    "personalization_evidence": [],
+                    "generic_indicators": ["Response format issues"],
+                    "key_inconsistencies": [],
+                    "anomalies": ["JSON parsing error"],
+                    "similarities": [],
+                    "overall_assessment": "Analysis completed with format issues",
+                    "confidence_score": 0.5,
+                    "detailed_analysis": "Response could not be properly parsed"
+                }
+    
     def analyze_report_with_feedback(self, report_data: str, comparison_data: str, 
                                    iteration: int = 1, improvement_history: List[dict] = None) -> ComparisonResult:
         """Enhanced analysis with external market intelligence using Mistral API"""
@@ -247,56 +322,44 @@ class LLMJudge:
                 # Try to extract company symbol from report for market analysis
                 company_symbol = self._extract_company_symbol(report_data)
                 if company_symbol:
-                    external_data = asyncio.run(self.get_external_market_intelligence(company_symbol))
+                    # Properly handle the async call without RuntimeWarning
+                    try:
+                        # Check if we're in an async context
+                        loop = asyncio.get_running_loop()
+                        # If we're already in an event loop, use thread executor
+                        import concurrent.futures
+                        with concurrent.futures.ThreadPoolExecutor() as executor:
+                            future = executor.submit(
+                                lambda: asyncio.run(self.get_external_market_intelligence(company_symbol))
+                            )
+                            external_data = future.result(timeout=30)
+                    except RuntimeError:
+                        # No running event loop, safe to use asyncio.run
+                        external_data = asyncio.run(self.get_external_market_intelligence(company_symbol))
             except Exception as e:
                 external_data = {"error": f"External data fetch failed: {str(e)}"}
             
-            iteration_context = ""
-            if improvement_history:
-                iteration_context = f"Previous iterations: {len(improvement_history)} completed"
-            
-            external_context = ""
-            if external_data and "error" not in external_data:
-                external_context = f"""
-                EXTERNAL MARKET INTELLIGENCE:
-                {json.dumps(external_data, indent=2)[:1000]}...
-                
-                Use this real-time market data to validate the report's strategic analysis.
-                """
-            
             prompt = f"""
-            You are an expert business analyst with access to real-time market intelligence.
-            Provide feedback to improve this strategic report. This is iteration {iteration}. {iteration_context}
+            Analyze this business report and provide feedback in valid JSON format.
             
-            REPORT TO ANALYZE:
-            {report_data[:2500]}...
+            REPORT: {report_data[:1500]}
+            DATA: {comparison_data[:1000]}
             
-            SOURCE DATA:
-            {comparison_data[:2000]}...
-            
-            {external_context}
-            
-            Apply Porter's Five Forces framework and validate against external market data.
-            Provide feedback in this JSON format:
+            Return ONLY this JSON structure:
             {{
                 "quality_score": 0.75,
                 "authenticity_score": 0.80,
                 "data_integration_score": 0.70,
-                "improvement_suggestions": [
-                    "Specific actionable suggestion based on market intelligence",
-                    "Strategic recommendation using Porter's framework"
-                ],
-                "personalization_evidence": ["Evidence of good market-specific customization"],
-                "generic_indicators": ["Signs of generic content not validated by market data"],
-                "key_inconsistencies": ["Data inconsistencies vs external market intelligence"],
-                "anomalies": ["Issues requiring attention based on market analysis"],
-                "similarities": ["Positive aspects validated by external data"],
-                "overall_assessment": "Strategic assessment with market validation",
+                "improvement_suggestions": ["suggestion1", "suggestion2"],
+                "personalization_evidence": ["evidence1"],
+                "generic_indicators": ["indicator1"],
+                "key_inconsistencies": ["inconsistency1"],
+                "anomalies": ["anomaly1"],
+                "similarities": ["similarity1"],
+                "overall_assessment": "brief assessment",
                 "confidence_score": 0.85,
-                "detailed_analysis": "Detailed feedback incorporating market intelligence"
+                "detailed_analysis": "brief analysis"
             }}
-            
-            Focus on strategic insights validated by external market intelligence.
             """
             
             headers = {
@@ -308,7 +371,7 @@ class LLMJudge:
                 "model": "mistral-large-latest",
                 "messages": [{"role": "user", "content": prompt}],
                 "temperature": 0.1,
-                "max_tokens": 2500
+                "max_tokens": 3000  # Increased token limit to prevent truncation
             }
             
             response = requests.post(
@@ -329,36 +392,27 @@ class LLMJudge:
             response_data = response.json()
             response_content = response_data["choices"][0]["message"]["content"]
             
-            try:
-                parsed_response = json.loads(response_content)
-                
-                result = ComparisonResult(
-                    anomalies=parsed_response.get("anomalies", []),
-                    similarities=parsed_response.get("similarities", []),
-                    confidence_score=parsed_response.get("confidence_score", 0.7),
-                    detailed_analysis=parsed_response.get("detailed_analysis", response_content),
-                    authenticity_score=parsed_response.get("authenticity_score"),
-                    data_integration_score=parsed_response.get("data_integration_score"),
-                    personalization_evidence=parsed_response.get("personalization_evidence", []),
-                    generic_indicators=parsed_response.get("generic_indicators", []),
-                    key_inconsistencies=parsed_response.get("key_inconsistencies", []),
-                    overall_assessment=parsed_response.get("overall_assessment", "Analysis completed"),
-                    improvement_suggestions=parsed_response.get("improvement_suggestions", []),
-                    quality_score=parsed_response.get("quality_score", 0.5),
-                    external_market_data=external_data if "error" not in external_data else None
-                )
-                
-                return result
-                
-            except json.JSONDecodeError:
-                return ComparisonResult(
-                    anomalies=["Failed to parse JSON response"],
-                    similarities=[],
-                    confidence_score=0.5,
-                    detailed_analysis=response_content,
-                    quality_score=0.5,
-                    external_market_data=external_data if "error" not in external_data else None
-                )
+            cleaned_response = self._clean_json_response(response_content)
+            
+            parsed_response = self._validate_and_fix_json(cleaned_response)
+            
+            result = ComparisonResult(
+                anomalies=parsed_response.get("anomalies", []),
+                similarities=parsed_response.get("similarities", []),
+                confidence_score=parsed_response.get("confidence_score", 0.7),
+                detailed_analysis=parsed_response.get("detailed_analysis", "Analysis completed"),
+                authenticity_score=parsed_response.get("authenticity_score", 0.7),
+                data_integration_score=parsed_response.get("data_integration_score", 0.7),
+                personalization_evidence=parsed_response.get("personalization_evidence", []),
+                generic_indicators=parsed_response.get("generic_indicators", []),
+                key_inconsistencies=parsed_response.get("key_inconsistencies", []),
+                overall_assessment=parsed_response.get("overall_assessment", "Analysis completed"),
+                improvement_suggestions=parsed_response.get("improvement_suggestions", []),
+                quality_score=parsed_response.get("quality_score", 0.5),
+                external_market_data=external_data if "error" not in external_data else None
+            )
+            
+            return result
                 
         except Exception as e:
             return ComparisonResult(

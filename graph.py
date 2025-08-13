@@ -52,16 +52,25 @@ def report_generation_node(state: AgentState):
     iteration_count = state.get('iteration_count', 0)
     judge_feedback = state.get('judge_feedback', None)
     
-    print(f"📝 Report Generator: Starting iteration {iteration_count + 1}")
+    print(f"📊 Report Generator: Starting iteration {iteration_count + 1}")
+    
+    # IMPORTANT: Ensure the same SQL results are used for all iterations
+    # Store the original SQL results on first iteration
+    if 'original_sql_results' not in state:
+        state['original_sql_results'] = sql_results_string
+    
+    # Always use the original SQL results to ensure data consistency
+    consistent_sql_results = state.get('original_sql_results', sql_results_string)
     
     # Generate or improve report based on feedback
     if iteration_count == 0:
         # First iteration - generate initial report
-        pdf_path, report_text_content = recommendation_agent.generate_report(sql_results_string)
+        pdf_path, report_text_content = recommendation_agent.generate_report(consistent_sql_results)
     else:
         # Subsequent iterations - improve based on judge feedback
+        # Use the SAME SQL results as the first iteration
         pdf_path, report_text_content = recommendation_agent.improve_report_with_feedback(
-            sql_results_string, judge_feedback, iteration_count
+            consistent_sql_results, judge_feedback, iteration_count
         )
     
     return {
@@ -71,9 +80,9 @@ def report_generation_node(state: AgentState):
         }],
         "report_path": pdf_path,
         "report_text_content": report_text_content,
-        "iteration_count": iteration_count + 1
+        "iteration_count": iteration_count + 1,
+        "original_sql_results": consistent_sql_results  # Preserve original data
     }
-
 def judge_node(state: AgentState):
     iteration_count = state.get('iteration_count', 1)
     print(f"⚖️ Judge Agent: Analyzing report iteration {iteration_count}...")
